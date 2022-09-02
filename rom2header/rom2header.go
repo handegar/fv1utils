@@ -14,6 +14,7 @@ var headerFilename string
 var structName string = "PROGRAMS"
 var programSize int = 512
 var numPrograms int = 8
+var useProgmem bool = true
 
 func parseCommandLineParameters() bool {
 	flag.StringVar(&romFilename, "in", romFilename, "Input file")
@@ -21,6 +22,7 @@ func parseCommandLineParameters() bool {
 	flag.StringVar(&structName, "prefix", structName, "C-Struct name")
 	flag.IntVar(&programSize, "programsize", programSize, "Size of each program in bytes")
 	flag.IntVar(&numPrograms, "numprograms", numPrograms, "Number of programs")
+	flag.BoolVar(&useProgmem, "progmem", useProgmem, "Use the PROGMEM statement")
 
 	// FIXME: Parse structPrefix and chunkSize as well (20220902 handegar)
 
@@ -132,14 +134,20 @@ func main() {
 *   Origin file: '%s'
 *   Program size: %d
 *   Number of programs: %d
+*   Total data size: %d bytes
 */
-`, romFilename, programSize, len(programs))
+`, romFilename, programSize, len(programs), len(programs)*programSize)
+
+	progmem := ""
+	if useProgmem {
+		progmem = "PROGMEM"
+	}
 
 	cHeaderText += fmt.Sprintf("const unsigned int NUM_PROGRAMS = %d;\n", len(programs))
-	cHeaderText += fmt.Sprintf("const unsigned char %s[][] = {\n", structName)
+	cHeaderText += fmt.Sprintf("const unsigned char %s[][%d] %s = {\n", structName, programSize, progmem)
 
 	cHeaderText += strings.Join(programs, ",\n")
-	cHeaderText += "\n}\n"
+	cHeaderText += "\n};\n"
 
 	//
 	// Write text buffer to file
