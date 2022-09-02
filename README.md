@@ -15,3 +15,11 @@ Concats several compiled files to a single bank-file (binary)
 
 ### Rom2Hex
 Converts a rom file to a hex file (script using on the "srecord" tools)
+
+
+# Dependencies
+- Arduino CLI
+  https://lindevs.com/install-arduino-cli-on-ubuntu
+  $ arduino-cli core install arduino:avr
+- SRecord
+  Installed via "apt"
