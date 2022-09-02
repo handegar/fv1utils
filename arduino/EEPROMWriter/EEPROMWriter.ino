@@ -22,6 +22,7 @@ void setup() {
 
   const int pinSDA = 4;  // SDA = Pin A4.  On the Uno Revision 3 board, this is the same as pin 16.
   const int pinSCL = 5;  // SCL = Pin A5.  On the Uno Revision 3 board, this is the same as pin 17.
+  const int pinLED = 13; // The builtin LED
 
   pinMode(pinSDA, OUTPUT);
   pinMode(pinSCL, OUTPUT);
@@ -36,7 +37,10 @@ void setup() {
   
   Wire.begin(); // Initialise Wire library
 
-  // Write ...
+  // 
+  // Writing the data to the EEPROM
+  //
+  digitalWrite(pinLED, HIGH);  
   for (int i=0; i<NUM_PROGRAMS; i++) {
     Serial.print(F("Writing program "));  
     Serial.println(i);
@@ -86,6 +90,7 @@ void setup() {
     Serial.print(nBytesOK); 
     Serial.println(F(" Bytes written correctly"));
   }
+  digitalWrite(pinLED, LOW);
 
   Serial.println(F("EEPROM written and verified"));
 }
