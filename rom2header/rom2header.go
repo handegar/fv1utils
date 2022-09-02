@@ -15,6 +15,7 @@ var structName string = "PROGRAMS"
 var programSize int = 512
 var numPrograms int = 8
 var useProgmem bool = true
+var padEmpty bool = true
 
 func parseCommandLineParameters() bool {
 	flag.StringVar(&romFilename, "in", romFilename, "Input file")
@@ -83,6 +84,17 @@ func main() {
 		return
 	}
 
+	fmt.Printf("   - Read %d bytes\n", len(bytes))
+
+	if len(bytes) < numPrograms*programSize && padEmpty {
+		fmt.Printf("   - NOTE: Binary size is not %d*%d=%d bytes. Padding missing bytes with zeros.\n",
+			numPrograms, programSize, numPrograms*programSize)
+		numPad := numPrograms*programSize - len(bytes)
+		for i := 0; i < numPad; i++ {
+			bytes = append(bytes, 0)
+		}
+	}
+
 	//
 	// Split bytes into separate chunks
 	//
@@ -96,7 +108,7 @@ func main() {
 		for j := 0; j < programSize; j++ {
 			chunks[chunkIdx][j] = bytes[bytesIdx]
 			bytesIdx++
-			if bytesIdx >= len(bytes) {
+			if bytesIdx > len(bytes) {
 				finished = true
 				break
 			}
@@ -105,11 +117,6 @@ func main() {
 		if finished {
 			break
 		}
-	}
-
-	if finished {
-		fmt.Printf(" - NOTE: Finished before %d*%d bytes had been processed.\n",
-			programSize, numPrograms)
 	}
 
 	//

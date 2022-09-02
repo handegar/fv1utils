@@ -7,19 +7,14 @@ Converts a rom/bank file to a proper C header file
 ## ArduinoEEPROMWriter
 An Arduino program/sketch for writing a ROM file to en EEPROM. 
 
-## Scripts
-The scripts uses the srecord tools
+# Usage
+Use `cat file1.bin file2.bin > bank.bin` to compile a bank of
+programs.  The max amount of programs in a bank is 8.
 
-### RomConcat
-Concats several compiled files to a single bank-file (binary)
-
-### Rom2Hex
-Converts a rom file to a hex file (script using on the "srecord" tools)
-
+Execute the `upload-rom-to-arduino.sh` script for preparing an arduino
+program with the bank embedded and uploading it to the device.
 
 # Dependencies
 - Arduino CLI
-  https://lindevs.com/install-arduino-cli-on-ubuntu
-  $ arduino-cli core install arduino:avr
-- SRecord
-  Installed via "apt"
+    https://lindevs.com/install-arduino-cli-on-ubuntu
+    $ arduino-cli core install arduino:avr
