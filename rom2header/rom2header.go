@@ -48,7 +48,7 @@ func parseCommandLineParameters() bool {
 }
 
 func main() {
-	fmt.Printf("* Rom2Header convert utility v0.01\n")
+	fmt.Printf("* ROM2Header convert utility v0.01\n")
 
 	if !parseCommandLineParameters() {
 		return
@@ -98,15 +98,13 @@ func main() {
 	//
 	// Split bytes into separate chunks
 	//
-
 	finished := false
 	bytesIdx := 0
-	chunkIdx := 0
 	var chunks [][]uint8
 	for i := 0; i < numPrograms; i++ {
 		chunks = append(chunks, make([]uint8, programSize))
 		for j := 0; j < programSize; j++ {
-			chunks[chunkIdx][j] = bytes[bytesIdx]
+			chunks[i][j] = bytes[bytesIdx]
 			bytesIdx++
 			if bytesIdx > len(bytes) {
 				finished = true
@@ -122,10 +120,9 @@ func main() {
 	//
 	// Convert chunks to a C-Header style text-buffer
 	//
-
 	var values [][]string
 	for i := 0; i < len(chunks); i++ {
-		values = append(values, make([]string, programSize))
+		values = append(values, make([]string, len(chunks[i])))
 		for j := 0; j < len(chunks[i]); j++ {
 			values[i][j] = fmt.Sprintf(" 0x%.2x", chunks[i][j])
 		}
@@ -166,6 +163,6 @@ func main() {
 	}
 
 	outfile.WriteString(cHeaderText)
-	fmt.Printf(" - Written to '%s'\n", headerFilename)
+	fmt.Printf(" - Written %d programs to '%s'\n", len(chunks), headerFilename)
 
 }
