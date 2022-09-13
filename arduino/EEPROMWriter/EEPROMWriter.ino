@@ -28,21 +28,20 @@ void setup() {
   pinMode(pinSCL, OUTPUT);
   digitalWrite(pinSDA, HIGH);
   digitalWrite(pinSCL, LOW);
-
-  Serial.begin(9200);
-  while (!Serial) {}    // Wait for serial port to connect (for Leonardo boards)
-  
-  Serial.print(F("Number of programs: "));
-  Serial.println(NUM_PROGRAMS);
-  
+ 
   Wire.begin(); // Initialise Wire library
+  
+  Serial.begin(9200);
+  Serial.print("EEPROM Writer startup");
+  Serial.print("Number of programs: ");
+  Serial.println(NUM_PROGRAMS);
 
   // 
   // Writing the data to the EEPROM
   //
   digitalWrite(pinLED, HIGH);  
   for (int i=0; i<NUM_PROGRAMS; i++) {
-    Serial.print(F("Writing program "));  
+    Serial.print("Writing program ");  
     Serial.println(i);
 
     const unsigned char * data = PROGRAMS[i]; 
@@ -59,10 +58,11 @@ void setup() {
       delay(10); // Small delay
     }
   }
-
+  
+  /*
   // Verify ...
   for (int i=0; i<NUM_PROGRAMS; i++) {
-    Serial.print(F("Verifying program "));  
+    Serial.print("Verifying program ");  
     Serial.print(i);
 
     const unsigned char * data = PROGRAMS[i];  // Pointer to data to verify against EEPROM
@@ -86,16 +86,17 @@ void setup() {
         delay(10);      // Small delay every 32 bytes
       }
     }
-    Serial.print(F(": ")); 
+    Serial.print(": "); 
     Serial.print(nBytesOK); 
-    Serial.println(F(" Bytes written correctly"));
+    Serial.println(" Bytes written correctly");
   }
+  */
   digitalWrite(pinLED, LOW);
 
-  Serial.println(F("EEPROM written and verified"));
+  
+  Serial.println("EEPROM written and verified :)");
 }
 
 void loop() {
-  while(true) {};
-
+  //while(true) {};
 }

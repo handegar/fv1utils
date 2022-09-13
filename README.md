@@ -5,7 +5,7 @@ Misc utils for compiling banks and uploading programs to EEPROM (24LCxx)
 Converts a rom/bank file to a proper C header file
 
 ## ArduinoEEPROMWriter
-An Arduino program/sketch for writing a ROM file to en EEPROM. 
+An Arduino program/sketch for writing a binary file to an EEPROM. 
 
 # Usage
 Use `cat file1.bin file2.bin > bank.bin` to compile a bank of
