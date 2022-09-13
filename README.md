@@ -1,15 +1,24 @@
 # fv1utils
 Misc utils for compiling banks and uploading programs to EEPROM (24LCxx)
 
-## Rom2Header
-Converts a rom/bank file to a proper C header file
+## ROM2Header
+Converts a ROM/Bank file to a proper C header file.
+
+## ROMSplit
+Reads a multiprogram ROM/Bank file and splits it into separate binary
+files.
+
+## ROMBuilder
+Reads multiple program binaries and compiles them together in to
+multi-program ROM/Bank file.
 
 ## ArduinoEEPROMWriter
 An Arduino program/sketch for writing a binary file to an EEPROM. 
 
 # Usage
-Use `cat file1.bin file2.bin > bank.bin` to compile a bank of
-programs.  The max amount of programs in a bank is 8.
+Use the `ROMBuilder` utility to compile a bank of programs. The max
+amount of programs in a bank is 8. (An alternative is to use `cat
+file1.bin file2.bin > bank.bin` command)
 
 Execute the `upload-rom-to-arduino.sh` script for preparing an arduino
 program with the bank embedded and uploading it to the device.
