@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-const PROGRAM_SIZE int = 512
+const PROGRAM_SIZE int = 128 * 4
 
 var bankFilename string = ""
 var argsBinFilenames []string // Filenames souped up from the args
@@ -94,10 +94,13 @@ func main() {
 		var b []byte
 		var err error
 		if fn == "BLANK" || fn == "" {
-			fmt.Printf(" - #%d) Blank program\n", nr)
+			fmt.Printf(" - #%d) <Blank program>\n", nr+1)
 			b = make([]byte, PROGRAM_SIZE)
+			for i := 0; i < PROGRAM_SIZE; i += 4 {
+				b[i] = 0x11 // NOP instruction
+			}
 		} else {
-			fmt.Printf(" - #%d) Loading '%s'\n", nr, fn)
+			fmt.Printf(" - #%d) Loading '%s'\n", nr+1, fn)
 			b, err = ioutil.ReadFile(fn) // b has type []byte
 			if err != nil {
 				fmt.Printf("   ERROR reading file: %s\n", err)

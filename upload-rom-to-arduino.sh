@@ -2,7 +2,7 @@
 
 if [ "$#" != "1" ]; then
     echo "* Upload ROM file to Arduino"
-    echo " - Usage: ./$0 <rom-binary-file>"
+    echo "  - Usage: $0 <rom-binary-file>"
     echo ""
     exit
 fi
@@ -25,7 +25,7 @@ PORT="/dev/ttyUSB0"
 ROMFILE=$1
 
 # Convert the bin-file to a c-header file
-./rom2header/rom2header -in $ROMFILE -out programs.h
+./rom2header/rom2header -in $ROMFILE -out ./programs.h
 mv ./programs.h arduino/EEPROMWriter/programs.h
 
 # Compile the writer with the embedded binary file

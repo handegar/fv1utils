@@ -23,6 +23,11 @@ file1.bin file2.bin > bank.bin` command)
 Execute the `upload-rom-to-arduino.sh` script for preparing an arduino
 program with the bank embedded and uploading it to the device.
 
+Use the following command to monitor the output from the upload process:
+
+  $ arduino-cli monitor -p /dev/ttyUSB0  -c baudrate=115200
+
+
 ## Arduino programmer setup
 - Connect the `3v3` pin to `pin8` of the 24LCxx chip. 
   - We can also use the `AREF` pin which is 5V, but this might be too

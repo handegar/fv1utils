@@ -16,7 +16,7 @@ var prgBinFilenames [8]string = [8]string{
 } // Explicit program filenames 1..8
 var filenamePattern string = "prg-%d.bin"
 var numberOfPrograms int = 8
-var programSize int = 512
+var programSize int = 128 * 4
 
 func parseCommandLineParameters() bool {
 	flag.Usage = func() {

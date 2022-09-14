@@ -12,7 +12,7 @@ import (
 var romFilename string
 var headerFilename string
 var structName string = "PROGRAMS"
-var programSize int = 512
+var programSize int = 128 * 4
 var numPrograms int = 8
 var useProgmem bool = true
 var padEmpty bool = true
