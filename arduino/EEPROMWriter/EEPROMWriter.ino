@@ -15,6 +15,8 @@
  */
 
 
+#define VERIFY_EEPROM 0
+
 const int EEPROM_ADDR_CMD = 0x50;
 const int PROGRAM_SIZE = 128*4;
 
@@ -53,7 +55,7 @@ void setup() {
 
     const unsigned char * data = PROGRAMS[i]; 
 
-    const int chunksize = 1;
+    const int chunksize = 16;
     for (int j=0; j<PROGRAM_SIZE; j+= chunksize){
       const unsigned int eeaddress = i*PROGRAM_SIZE + j;
       Wire.beginTransmission(EEPROM_ADDR_CMD);
@@ -66,10 +68,15 @@ void setup() {
       delay(10); // Small delay
     }
   }
+
+  Serial.print("Wrote ");
+  Serial.print(counter);
+  Serial.println(" bytes in total.");
   
   //
   // Verify the program
   //
+#if VERIFY_EEPROM
   counter = 0;
   for (int i=0; i<NUM_PROGRAMS; i++) {
     Serial.print("Verifying program ");  
@@ -117,9 +124,9 @@ void setup() {
     else {
       Serial.println("");   
     }
-    
   }
-  
+#endif
+
   digitalWrite(pinLED, LOW);
 
   

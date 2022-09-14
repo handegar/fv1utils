@@ -97,7 +97,7 @@ func main() {
 			fmt.Printf(" - #%d) <Blank program>\n", nr+1)
 			b = make([]byte, PROGRAM_SIZE)
 			for i := 0; i < PROGRAM_SIZE; i += 4 {
-				b[i] = 0x11 // NOP instruction
+				b[i] = 0x11 // NOP instruction each 4th byte
 			}
 		} else {
 			fmt.Printf(" - #%d) Loading '%s'\n", nr+1, fn)
