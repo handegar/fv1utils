@@ -15,9 +15,10 @@
  */
 
 
-#define VERIFY_EEPROM 0
+#define VERIFY_EEPROM 1
 
 const int EEPROM_ADDR_CMD = 0x50;
+const int  EEPROM_CLOCK_SPEED = 400000;
 const int PROGRAM_SIZE = 128*4;
 
 void setup() {  
@@ -31,10 +32,11 @@ void setup() {
   pinMode(pinSCL, OUTPUT);
   digitalWrite(pinSDA, HIGH);
   digitalWrite(pinSCL, LOW);
- 
-  Wire.begin(); // Initialise Wire library
-  
+
   Serial.begin(115200);
+    
+  Wire.begin(); // Initialise Wire library
+  Wire.setClock(EEPROM_CLOCK_SPEED);   
   
   Serial.println("== EEPROM Writer startup ==");
   Serial.print("Number of programs: ");
@@ -45,7 +47,7 @@ void setup() {
   //
   digitalWrite(pinLED, HIGH);  
 
-  int counter = 0;
+  int writtenTotal = 0;
   for (int i=0; i<NUM_PROGRAMS; i++) {
     Serial.print("Writing program ");  
     Serial.print(i);
@@ -54,30 +56,32 @@ void setup() {
     Serial.println(" bytes).");
 
     const unsigned char * data = PROGRAMS[i]; 
-
+    int written = 0;
     const int chunksize = 16;
     for (int j=0; j<PROGRAM_SIZE; j+= chunksize){
-      const unsigned int eeaddress = i*PROGRAM_SIZE + j;
+      const unsigned int eeaddress = written + writtenTotal;
       Wire.beginTransmission(EEPROM_ADDR_CMD);
       Wire.write((int)(eeaddress >> 8));    // MSB
       Wire.write((int)(eeaddress & 0xFF));  // LSB
       for (unsigned int k = 0; k < chunksize; k++ ) {
-        Wire.write(pgm_read_byte_near(data + (counter++)));  // Write to EEPROM
+        Wire.write(pgm_read_byte_near(data + written));  // Write to EEPROM
+        written += 1;
       }
       Wire.endTransmission();
       delay(10); // Small delay
     }
+    writtenTotal += written;
   }
 
   Serial.print("Wrote ");
-  Serial.print(counter);
+  Serial.print(writtenTotal);
   Serial.println(" bytes in total.");
-  
+   
   //
   // Verify the program
   //
 #if VERIFY_EEPROM
-  counter = 0;
+  int readTotal = 0;
   for (int i=0; i<NUM_PROGRAMS; i++) {
     Serial.print("Verifying program ");  
     Serial.print(i);
@@ -86,9 +90,10 @@ void setup() {
 
     int nBytesOK = 0;  
     int nBytesFail = 0;
+    int readBytes = 0;
     
     for (int j = 0; j<PROGRAM_SIZE; j++) {
-      const unsigned int eeaddress = i*PROGRAM_SIZE + j;  // EEPROM address
+      const unsigned int eeaddress = readBytes + readTotal;
 
       Wire.beginTransmission(EEPROM_ADDR_CMD);
       Wire.write((int)(eeaddress >> 8));    // MSB
@@ -98,21 +103,24 @@ void setup() {
       //delay(15);
       if (Wire.available()) {
         const byte read = Wire.read();  // Read byte from EEPROM
-        if (read == pgm_read_byte_near(data + (counter++))) { // Check it is as expected
+        if (read == pgm_read_byte_near(data + readBytes)) { // Check it is as expected
           nBytesOK++;
         }
         else {
           nBytesFail++;         
         }
+        readBytes += 1;
       }
       else {
         // A "read" is not available. This means trouble...
       }
       
-      if ((j % 32) == 31) {
-        delay(10);      // Small delay every 32 bytes
+      if (readBytes % 16) {
+        delay(10);      // Small delay every 16 bytes
       }
     }
+
+    readTotal += readBytes;
     
     Serial.print(": "); 
     Serial.print(nBytesOK); 
@@ -129,7 +137,9 @@ void setup() {
 
   digitalWrite(pinLED, LOW);
 
-  
+  Serial.print("Read and verified ");
+  Serial.print(readTotal);
+  Serial.println(" bytes.");
   Serial.println("EEPROM written and verified...\n");
 }
 
